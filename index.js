@@ -19,10 +19,13 @@ app.get('/aulas', (req, res) => {
 
 app.post('/aulas', (req, res) => {
     const dados = req.body
-    dados['id'] = bancoDeDados.lenght + 1
-    bancoDeDados.push(dados)
-    req.status(201)
 
+    try{
+        const bd = fs.readFileSync('bancoDeDados.json', 'utf-8')
+    } catch (e) {
+        console.log(e)
+    }
+    res.status(201).send(dados)
 })
 
 app.put('/aulas/:id',(req,res) => {
@@ -33,13 +36,13 @@ app.put('/aulas/:id',(req,res) => {
     }
     res.send("ok")
 
-    app.delete('/aulas/:id', (req,res) => {
-        const userIndex = bancoDeDados.findIndex(user => user.id == id)
-        if (userIndex === -1){
-            res.status(404).json({msg:"Usuário não encontrado"})
-        }
-        bancoDeDados.splice(userIndex, 1)
-        res.status(204).send()
+app.delete('/aulas/:id', (req,res) => {
+    const userIndex = bancoDeDados.findIndex(user => user.id == id)
+    if (userIndex === -1){
+        res.status(404).json({msg:"Usuário não encontrado"})
+    }
+    bancoDeDados.splice(userIndex, 1)
+    res.status(204).send()
     })
 })
 app.listen(PORT, () => {console.log('servidor online')})
