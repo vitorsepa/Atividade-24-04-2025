@@ -1,5 +1,6 @@
 const express = require('express')
 
+const fs = require('fs')
 const app = express()
 const PORT = 8000
 app.use(express.json())
@@ -13,9 +14,22 @@ const bancoDeDados = [
         professor: 'Ramon'
     }
 ]
-app.get('/aulas', (req, res) => {
-    res.status(200).send(bancoDeDados)
+
+app.get('/aulas/:id', (req, res) => { 
+    const id = req.params.id 
+    fs.readFile('bancoDeDados.json', 'utf-8', (err, data) => { 
+    if(err){ 
+    s(500).json({msg: "erro no servidor"})
+    }
+    const usuarios = JSON.parse(data)
+    const user = usuarios.find(user => user.id == id) 
+    if(user){
+    res.status(200).json(user) 
+    }
+    res.status (404).json({msg: 'Usuario nao encontrado' })
+    })
 })
+
 
 app.post('/aulas', (req, res) => {
     const dados = req.body
