@@ -30,16 +30,23 @@ app.get('/aulas/:id', (req, res) => {
     })
 })
 
-
 app.post('/aulas', (req, res) => {
     const dados = req.body
-
-    try{
-        const bd = fs.readFileSync('bancoDeDados.json', 'utf-8')
-    } catch (e) {
-        console.log(e)
-    }
-    res.status(201).send(dados)
+    fs.readFile('bancoDeDados.json', 'utf-8', (err, data) => {
+        if(err){
+        }
+        const aulas = JSON.parse(data)
+        console.log(aulas)
+        dados['id'] = aulas.length + 1
+        aulas.push(dados)
+        console.log(aulas)
+        fs.writeFile('bancoDeDados.json', aulas, (err)=>{
+            if(err){
+                res.status (500).json({msg: 'Erro no servidor'})
+            }
+            res.status (201).send(dados)
+        })
+    })
 })
 
 app.put('/aulas/:id',(req,res) => {
